@@ -1,9 +1,9 @@
 package main
 
 import (
-	"evaCli/template"
 	"flag"
 	"fmt"
+	"github.com/Gitforxuyang/evaCli/template"
 	"os"
 	"path"
 )
