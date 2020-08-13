@@ -10,7 +10,7 @@ import (
 const (
 	makefile string = `
 proto:
-	-f mkdir ./proto/{{.Name}}
+	mkdir ./proto/{{.Name}} || true
 	protoc --eva_out=plugins=all:./proto/{{.Name}} -I=./proto {{.Name}}.proto
 	protoc --go_out=plugins=grpc:./proto/{{.Name}} -I=./proto {{.Name}}.proto
 
