@@ -55,10 +55,10 @@ const (
     "httpClient": true
   }
 }`
-	loc  string = ``
-	dev  string = ``
-	test string = ``
-	prod string = ``
+	loc  string = `{}`
+	dev  string = `{}`
+	test string = `{}`
+	prod string = `{}`
 )
 
 func Conf(d Data) {
