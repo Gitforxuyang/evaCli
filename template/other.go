@@ -4,14 +4,15 @@ import (
 	"html/template"
 	"os"
 	"path"
+	"unicode"
 )
 
 const (
 	makefile string = `
 proto:
-	-f mkdir ./proto/hello
-	protoc --eva_out=plugins=all:./proto/hello -I=./proto hello.proto
-	protoc --go_out=plugins=grpc:./proto/hello -I=./proto hello.proto
+	-f mkdir ./proto/{{.Name}}
+	protoc --eva_out=plugins=all:./proto/{{.Name}} -I=./proto {{.Name}}.proto
+	protoc --go_out=plugins=grpc:./proto/{{.Name}} -I=./proto {{.Name}}.proto
 
 .PHONY: proto
 `
@@ -28,28 +29,55 @@ require (
 )
 
 `
+	main string = `
+package main
+
+import (
+	"{{.Name}}/handler"
+	"{{.Name}}/proto/{{.Name}}"
+	"github.com/Gitforxuyang/eva/server"
+	"google.golang.org/grpc"
 )
 
-func Makefile(app string) error {
-	f, err := os.Create(path.Join(app, "Makefile"))
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	f.WriteString(makefile)
-	return nil
+func main(){
+	server.Init()
+	server.RegisterGRpcService(func(server *grpc.Server) {
+		{{.Name}}.RegisterSayHelloServiceServer(server,&handler.HandlerService{})
+	})
+	server.Run()
+}
+`
+)
+
+func Makefile(d Data) {
+	f, err := os.Create(path.Join(d.Name, "Makefile"))
+	CheckErr(err)
+	tmp, err := template.New("test").Parse(makefile)
+	CheckErr(err)
+	err = tmp.Execute(f, d)
+	CheckErr(err)
 }
 
 type Data struct {
 	Name string
+	Port int
 }
 
-func GoMod(app string) {
-	f, err := os.Create(path.Join(app, "go.mod"))
+func GoMod(d Data) {
+	f, err := os.Create(path.Join(d.Name, "go.mod"))
 	CheckErr(err)
 	tmp, err := template.New("test").Parse(gomod)
 	CheckErr(err)
-	err = tmp.Execute(f, Data{Name: app})
+	err = tmp.Execute(f, d)
+	CheckErr(err)
+}
+
+func Main(d Data) {
+	f, err := os.Create(path.Join(d.Name, "main.go"))
+	CheckErr(err)
+	tmp, err := template.New("test").Parse(main)
+	CheckErr(err)
+	err = tmp.Execute(f, d)
 	CheckErr(err)
 }
 
@@ -57,4 +85,17 @@ func CheckErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+func Ucfirst(str string) string {
+	for i, v := range str {
+		return string(unicode.ToUpper(v)) + str[i+1:]
+	}
+	return ""
+}
+
+func Lcfirst(str string) string {
+	for i, v := range str {
+		return string(unicode.ToLower(v)) + str[i+1:]
+	}
+	return ""
 }

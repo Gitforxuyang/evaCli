@@ -37,8 +37,28 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	template.Makefile(*name)
-	template.GoMod(*name)
+	os.MkdirAll(path.Join(*name, "app", "service"), 0777)
+	os.MkdirAll(path.Join(*name, "app", "assembler"), 0777)
+	os.MkdirAll(path.Join(*name, "conf"), 0777)
+	os.MkdirAll(path.Join(*name, "handler"), 0777)
+	os.MkdirAll(path.Join(*name, "domain", "entity"), 0777)
+	os.MkdirAll(path.Join(*name, "domain", "event"), 0777)
+	os.MkdirAll(path.Join(*name, "domain", "repo"), 0777)
+	os.MkdirAll(path.Join(*name, "domain", "service"), 0777)
+	os.MkdirAll(path.Join(*name, "domain", "util"), 0777)
+	os.MkdirAll(path.Join(*name, "infra", "err"), 0777)
+	os.MkdirAll(path.Join(*name, "infra", "helper"), 0777)
+	os.MkdirAll(path.Join(*name, "infra", "repo"), 0777)
+	os.MkdirAll(path.Join(*name, "infra", "util"), 0777)
+	os.MkdirAll(path.Join(*name, "proto"), 0777)
+	d := template.Data{Name: *name, Port: *port}
+	template.Makefile(d)
+	template.GoMod(d)
+	template.Main(d)
+	template.Conf(d)
+	template.Proto(d)
+	template.Handler(d)
+
 }
 
 func isExist(path string) bool {
