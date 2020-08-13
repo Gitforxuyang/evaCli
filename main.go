@@ -54,6 +54,7 @@ func main() {
 	d := template.Data{Name: *name, Port: *port}
 	template.Makefile(d)
 	template.GoMod(d)
+	template.Git(d)
 	template.Main(d)
 	template.Conf(d)
 	template.Proto(d)
