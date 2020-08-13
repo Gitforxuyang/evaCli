@@ -42,7 +42,7 @@ import (
 func main(){
 	server.Init()
 	server.RegisterGRpcService(func(server *grpc.Server) {
-		{{.Name}}.Register{{.Service}}Server(server,&handler.HandlerService{})
+		{{.Name}}.Register{{.Service}}ServiceServer(server,&handler.HandlerService{})
 	})
 	server.Run()
 }
