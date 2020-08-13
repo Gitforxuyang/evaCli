@@ -6,6 +6,8 @@ import (
 	"github.com/Gitforxuyang/evaCli/template"
 	"os"
 	"path"
+	"regexp"
+	"unicode"
 )
 
 func CheckErr(err error) {
@@ -19,8 +21,8 @@ var (
 )
 
 func main() {
-	name := flag.String("name", "", "tt name")
-	port := flag.Int("port", 0, "tt port")
+	name := flag.String("name", "", "app name")
+	port := flag.Int("port", 0, "app port")
 	flag.Parse()
 	if *name == "" {
 		panic(fmt.Sprintf("name不能为空 \n示例：%s", tmp))
@@ -28,10 +30,17 @@ func main() {
 	if *port == 0 {
 		panic(fmt.Sprintf("port不能为0 \n示例：%s", tmp))
 	}
-	//TODO:增加name的正则判断。只能创建驼峰命名
-	//if isExist(*name) {
-	//	panic("期望创建的服务已存在")
-	//}
+	match, _ := regexp.MatchString("^[a-zA-Z]+$", *name)
+	if !match {
+		panic("app name只能是大小写字母")
+	}
+	//首字母不允许大写
+	if unicode.IsUpper([]rune(*name)[0]) {
+		panic("首字母必须小写")
+	}
+	if isExist(*name) {
+		panic("期望创建的服务已存在")
+	}
 	//创建文件夹
 	err := os.MkdirAll(path.Join(*name), 0777)
 	if err != nil {
