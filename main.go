@@ -60,7 +60,7 @@ func main() {
 	os.MkdirAll(path.Join(*name, "infra", "repo"), 0777)
 	os.MkdirAll(path.Join(*name, "infra", "util"), 0777)
 	os.MkdirAll(path.Join(*name, "proto"), 0777)
-	d := template.Data{Name: *name, Port: *port}
+	d := template.Data{Name: *name, Port: *port, Service: template.Ucfirst(*name)}
 	template.Makefile(d)
 	template.GoMod(d)
 	template.Git(d)

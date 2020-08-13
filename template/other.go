@@ -42,7 +42,7 @@ import (
 func main(){
 	server.Init()
 	server.RegisterGRpcService(func(server *grpc.Server) {
-		{{.Name}}.RegisterSayHelloServiceServer(server,&handler.HandlerService{})
+		{{.Name}}.Register{{.Service}}Server(server,&handler.HandlerService{})
 	})
 	server.Run()
 }
@@ -151,8 +151,9 @@ func Makefile(d Data) {
 }
 
 type Data struct {
-	Name string
-	Port int
+	Name    string
+	Port    int
+	Service string
 }
 
 func GoMod(d Data) {
